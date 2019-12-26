@@ -11,7 +11,7 @@
 
 
 
-## :exclamation: Issues
+## :bug: Issues
 
 I'm sure you'll find bugs and when you do it would be great if you'd could [report them here](https://github.com/oreliain/vue-i18n-extract-keys/issues).
 
