@@ -44,3 +44,5 @@ jobs:
       - name: Semantic Release
         uses: codfish/semantic-release-action@v1
         id: semantic   # Need an `id` for output variables
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
