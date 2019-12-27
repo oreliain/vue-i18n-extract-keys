@@ -2,9 +2,9 @@
   "name": "vue-i18n-extract-keys",
   "version": "1.0.0",
   "description": "Extract all vue-i18n keys from Vue.js project source files.",
-  "main": "index.js",
+  "main": "./index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "bin": {
     "vue-i18n-extract-keys": "./index.js"
@@ -28,7 +28,9 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
+    "chai": "^4.2.0",
     "husky": "^3.1.0",
+    "mocha": "^6.2.2",
     "signale": "^1.4.0",
     "yargs": "^15.0.2"
   },
