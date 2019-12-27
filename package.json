@@ -1,17 +1,18 @@
 {
   "name": "vue-i18n-extract-keys",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "Extract all vue-i18n keys from Vue.js project source files.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "semantic-release": "semantic-release"
   },
   "bin": {
     "vue-i18n-extract-keys": "./index.js"
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/oreliain/vue-i18n-extract-keys.git"
+    "url": "https://github.com/oreliain/vue-i18n-extract-keys.git"
   },
   "keywords": [
     "vue",
@@ -32,11 +33,15 @@
     "husky": "^3.1.0",
     "mocha": "^6.2.2",
     "signale": "^1.4.0",
-    "yargs": "^15.0.2"
+    "yargs": "^15.0.2",
+    "semantic-release": "^15.14.0"
   },
   "husky": {
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "publishConfig": {
+    "access": "restricted"
   }
 }
