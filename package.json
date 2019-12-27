@@ -26,7 +26,15 @@
   "homepage": "https://github.com/oreliain/vue-i18n-extract-keys#readme",
   "dependencies": {},
   "devDependencies": {
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-conventional": "^8.2.0",
+    "husky": "^3.1.0",
     "signale": "^1.4.0",
     "yargs": "^15.0.2"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
   }
 }
