@@ -152,7 +152,10 @@ describe("Files functions", () => {
       command.writeToFile(parsedResult);
       expect(fs.existsSync(filepath("en"))).to.be.true;
       expect(fs.existsSync(filepath("fr"))).to.be.true;
-      let fileContent = fs.readFileSync(path.resolve(outputDir, "en.json"), "utf8");
+      let fileContent = fs.readFileSync(
+        path.resolve(outputDir, "en.json"),
+        "utf8"
+      );
       if (fileContent) {
         fileContent = JSON.parse(fileContent);
       }
@@ -162,5 +165,7 @@ describe("Files functions", () => {
 });
 
 after("Remove produce files", () => {
+  fs.unlinkSync(path.resolve(srcDir, "i18n", "locales", "en.json"));
+  fs.unlinkSync(path.resolve(srcDir, "i18n", "locales", "fr.json"));
   fs.rmdirSync(path.resolve(srcDir, "i18n"), { recursive: true });
 });
