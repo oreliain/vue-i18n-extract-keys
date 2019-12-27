@@ -6,8 +6,7 @@ const yargs = require("yargs");
 const signale = require("signale");
 
 const defaults = require("./defaults");
-
-const PROJECT_DIR = path.resolve(__dirname, "..");
+const PROJECT_DIR = process.env.PWD;
 
 const argv = yargs
   .option("locales", {
@@ -32,14 +31,14 @@ const argv = yargs
       }
       return completePath;
     },
-    default: defaults.sourcePath
+    default: defaults.src
   })
   .option("output", {
     alias: "o",
     type: "string",
     description: "Target directory to write file",
     coerce: value => {
-      const completePath = path.join(PROJECT_DIR, SOURCE_DIR, value);
+      const completePath = path.join(PROJECT_DIR, defaults.src, value);
       if (
         !fs.existsSync(completePath) ||
         !fs.statSync(completePath).isDirectory()
@@ -210,7 +209,7 @@ const writeToFile = localesMsg => {
   if (argv.withIndexFile) {
     const indexFile = path.join(destinationPath, "index.js");
     const content = langList
-      .map(l => `  ${l}: require("./${l}.json")`)
+      .map(l => `\t${l}: require("./${l}.json")`)
       .join(",\n");
     const indexContent = `module.exports = {\n${content}\n};\n`;
     fs.writeFileSync(indexFile, indexContent);
