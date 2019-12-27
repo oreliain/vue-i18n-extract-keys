@@ -2,7 +2,8 @@ name: Test and publish package
 
 on:
   push:
-    master
+    branches:
+    - master
 
 jobs:
   publish:
