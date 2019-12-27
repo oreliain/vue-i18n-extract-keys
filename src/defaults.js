@@ -8,5 +8,6 @@ module.exports = {
     i18nPatterns: [`\\$t[ce]?\\(["'](.*?)["'].*?\\)`],
     verbose: false,
     withIndexFile: false,
-    forceErase: false
+    forceErase: false,
+    logLevel: "success"
 }
