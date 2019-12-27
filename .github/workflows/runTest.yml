@@ -1,4 +1,4 @@
-name: vue-i18n-extract-keys tests
+name: Unit tests
 
 on: [push]
 
