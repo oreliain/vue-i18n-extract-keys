@@ -28,9 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      NPM_USERNAME: ${{ secrets.NPM_USERNAME }}
-      NPM_PASSWORD: ${{ secrets.NPM_PASSWORD }}
-      NPM_EMAIL: ${{ secrets.NPM_EMAIL }}
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v1
@@ -44,11 +42,5 @@ jobs:
           npm ci
           npm run build --if-present
       - name: Semantic Release
-        uses: cycjimmy/semantic-release-action@v2
+        uses: codfish/semantic-release-action@v1
         id: semantic   # Need an `id` for output variables
-        with:
-          branch: master
-        # You can specify specifying version range for the extra plugins if you prefer.
-          extra_plugins: |
-            @semantic-release/git
-            @semantic-release/changelog@3.0.0
