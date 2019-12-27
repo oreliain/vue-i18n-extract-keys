@@ -41,6 +41,8 @@ jobs:
         run: |
           npm ci
           npm run build --if-present
+          echo $NPM_TOKEN
+          echo ${{ secrets.NPM_TOKEN }}
       - name: Semantic Release
         uses: codfish/semantic-release-action@v1
         id: semantic   # Need an `id` for output variables
