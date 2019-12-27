@@ -82,6 +82,11 @@ const argv = yargs
     type: "boolean",
     description: "Does not merge output files. Erase it instead.",
     default: defaults.forceErase
+  })
+  .option("logLevel", {
+    type: "string",
+    choices: ["warn", "success", "error", "debug", "all"],
+    default: "success"
   }).argv;
 
 const langList = argv.locales;
@@ -96,7 +101,7 @@ const i18nPatterns = argv.i18nPatterns;
  * @param  {...any} messages
  */
 const log = (type, ...messages) => {
-  if (argv.verbose) {
+  if (argv.verbose && (type === argv.logLevel || argv.logLevel === "all")) {
     signale[type](...messages);
   }
 };
