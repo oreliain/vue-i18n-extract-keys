@@ -154,7 +154,7 @@ module.exports = class Command {
         const fileContent = fs.readFileSync(localeFile, "utf8");
         finalObject[lang] = JSON.parse(fileContent);
       }
-      finalObject[lang] = this.deepMerge({}, finalObject[lang], localesMsg);
+      finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
       fs.writeFileSync(localeFile, JSON.stringify(finalObject[lang], null, 2));
     });
     if (this.withIndexFile) {
