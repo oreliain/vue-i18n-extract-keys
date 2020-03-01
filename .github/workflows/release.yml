@@ -1,0 +1,47 @@
+name: NPM test and publish
+
+on:
+  push:
+    branches:
+    - releases/**
+  pull_request:
+    branches:
+    - releases/**
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v1
+      - name: "Use node v12"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: npm install, build, and test
+        run: |
+          npm ci
+          npm run build --if-present
+          npm test
+  publish:
+    needs: test
+    runs-on: ubuntu-latest
+    env:
+      CI: true
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v1
+      - name: "Use node v12"
+        uses: actions/setup-node@v1
+        with:
+          node-version: 12
+          registry-url: https://registry.npmjs.org/
+      - name: npm install, build
+        run: |
+          npm ci
+          npm run build --if-present
+      - name: Semantic Releaser
+        uses: brpaz/action-semantic-release@v1

@@ -1,4 +1,4 @@
-name: NPM test and publish
+name: NPM test
 
 on:
   push:
@@ -23,22 +23,3 @@ jobs:
           npm ci
           npm run build --if-present
           npm test
-  publish:
-    needs: test
-    runs-on: ubuntu-latest
-    env:
-      CI: true
-    steps:
-      - name: "Checkout"
-        uses: actions/checkout@v1
-      - name: "Use node v12"
-        uses: actions/setup-node@v1
-        with:
-          node-version: 12
-          registry-url: https://registry.npmjs.org/
-      - name: npm install, build
-        run: |
-          npm ci
-          npm run build --if-present
-      - name: Semantic Releaser
-        uses: brpaz/action-semantic-release@v1
