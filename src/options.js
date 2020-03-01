@@ -33,7 +33,7 @@ module.exports = {
     type: "string",
     description: "Target directory to write file",
     coerce: value => {
-      const completePath = path.join(PROJECT_DIR, defaults.src, value);
+      const completePath = path.join(PROJECT_DIR, value);
       if (
         !fs.existsSync(completePath) ||
         !fs.statSync(completePath).isDirectory()
