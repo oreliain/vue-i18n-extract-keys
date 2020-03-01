@@ -1,0 +1,28 @@
+name: NPM test
+
+on:
+  pull_request:
+    branches:
+      - releases
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
+    env:
+      CI: true
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+      - name: "Use node ${{ matrix.node-version }}"
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+          registry-url: https://registry.npmjs.org/
+      - name: npm install, build, and test
+        run: |
+          npm ci
+          npm run build --if-present
+          npm test
