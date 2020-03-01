@@ -1,6 +1,6 @@
 {
   "name": "@oreliain/vue-i18n-extract-keys",
-  "version": "1.0.0",
+  "version": "0.0.0",
   "description": "Extract all vue-i18n keys from Vue.js project source files.",
   "main": "./index.js",
   "scripts": {
