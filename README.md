@@ -1,4 +1,4 @@
-<h1 align="center">vue-i18n-extract-keys</h1>
+<h1 align="center">@oreliain/vue-i18n-extract-keys</h1>
 <p align="center">
 
 </p>
@@ -12,12 +12,12 @@
 ### Installation
 ```bash
 ## NPM
-npm install --save-dev vue-i18n-extract-keys
+npm install --save-dev @oreliain/vue-i18n-extract-keys
 
 ## or
 
 ## Yarn
-yarn add -D vue-i18n-extract-keys
+yarn add -D @oreliain/vue-i18n-extract-keys
 ```
 
 #### Getting Started
@@ -25,6 +25,15 @@ yarn add -D vue-i18n-extract-keys
 To extract keys executed the command : 
 ```bash
 npx vue-i18n-extract-keys
+```
+
+or create a script entry in your `package.json`:
+```json
+{
+  "scripts": {
+    "i18n:extract": "vue-i18n-extract-keys -o ./src/locales -l en fr -e -x"
+  }
+}
 ```
 
 The command takes the following options : 
