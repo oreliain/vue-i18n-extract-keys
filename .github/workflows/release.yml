@@ -3,9 +3,11 @@ name: NPM test and publish
 on:
   push:
     branches:
+    - releases
     - releases/**
   pull_request:
     branches:
+    - releases
     - releases/**
 
 jobs:
