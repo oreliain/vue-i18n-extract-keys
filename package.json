@@ -4,8 +4,7 @@
   "description": "Extract all vue-i18n keys from Vue.js project source files.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha",
-    "semantic-release": "semantic-release"
+    "test": "mocha"
   },
   "bin": {
     "vue-i18n-extract-keys": "./index.js"
@@ -32,15 +31,9 @@
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
-    "@semantic-release/changelog": "^3.0.6",
-    "@semantic-release/commit-analyzer": "^6.3.3",
-    "@semantic-release/git": "^7.0.18",
-    "@semantic-release/github": "^5.5.5",
-    "@semantic-release/npm": "^5.3.5",
     "chai": "^4.2.0",
     "husky": "^3.1.0",
-    "mocha": "^6.2.2",
-    "semantic-release": "^15.14.0"
+    "mocha": "^6.2.2"
   },
   "husky": {
     "hooks": {
