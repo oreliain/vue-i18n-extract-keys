@@ -26,14 +26,14 @@
   "homepage": "https://github.com/oreliain/vue-i18n-extract-keys#readme",
   "dependencies": {
     "signale": "^1.4.0",
-    "yargs": "^15.0.2"
+    "yargs": "^15.3.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.2.0",
     "@commitlint/config-conventional": "^8.2.0",
     "chai": "^4.2.0",
     "husky": "^3.1.0",
-    "mocha": "^6.2.2"
+    "mocha": "^7.2.0"
   },
   "husky": {
     "hooks": {
