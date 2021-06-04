@@ -12,19 +12,22 @@ module.exports = {
   },
   src: {
     alias: "s",
-    type: "string",
-    description: "Source dir to analyze",
+    type: "array",
+    description: "Source directories to analyze",
     coerce: value => {
-      const completePath = path.join(PROJECT_DIR, value);
-      if (
-        !fs.existsSync(completePath) ||
-        !fs.statSync(completePath).isDirectory()
-      ) {
-        throw new Error(
-          `Argument '${completePath}' must be a valid existing directory`
-        );
-      }
-      return completePath;
+      const coercedValues = value.map(v => {
+          const completePath = path.join(PROJECT_DIR, v);
+          if (
+              !fs.existsSync(completePath) ||
+              !fs.statSync(completePath).isDirectory()
+          ) {
+              throw new Error(
+                  `Argument '${completePath}' must be a valid existing directory`
+              );
+          }
+          return completePath;
+      });
+      return coercedValues;
     },
     default: defaults.src
   },

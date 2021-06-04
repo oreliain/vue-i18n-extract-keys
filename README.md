@@ -48,14 +48,14 @@ Generate `en.json` and `fr.json` files in `./i18n/locales`
 npx vue-i18n-extrack-keys -l en fr
 ```
 
-##### -s, --source (default: "src") :
-The source directory to parse for keys extracting
+##### -s, --source (default: ["src"]) :
+The source directories to parse for keys extracting
 
 ###### Example
 
-Extract keys from `./sources` directory
+Extract keys from `./sources` and `./components` directories
 ```bash
-npx vue-i18n-extrack-keys -s ./sources
+npx vue-i18n-extrack-keys -s ./sources -s ./components
 ```
 
 ##### -o, --output (default: "i18n/locales") :

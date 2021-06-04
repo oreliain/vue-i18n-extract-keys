@@ -141,7 +141,21 @@ module.exports = class Command {
     return messages;
   }
 
-  /**
+    /**
+     * Extract keys from a directory
+     * @param {Array<string>} dirPath
+     * @return {object} keys
+     */
+    extractDirectories(dirPaths) {
+        let messages = {};
+        dirPaths.forEach(dirPath => {
+            messages = this.deepMerge(messages, this.extractDirectory(dirPath));
+        });
+        return messages;
+    }
+
+
+    /**
    * Write locales assets files.
    * @param {object} localesMsg
    */
@@ -171,7 +185,7 @@ module.exports = class Command {
     // Begin execution
     signale.time("Extract i18n keys");
     this.log("start", "Start parsing files");
-    const messages = this.extractDirectory(this.src);
+    const messages = this.extractDirectories(this.src);
     this.writeToFile(messages);
     this.log("complete", "Locale assets generated !");
     signale.timeEnd("Extract i18n keys");
