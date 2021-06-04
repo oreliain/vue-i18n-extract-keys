@@ -105,7 +105,7 @@ describe("Utils functions", () => {
 });
 
 describe("Files functions", () => {
-  describe("#parseFile", () => {
+  describe("command.parseFile()", () => {
     it("should correctly extract file keys", () => {
       const oracle = {
         messages: { hello: { fromVue: "messages.hello.fromVue" } }
@@ -121,7 +121,7 @@ describe("Files functions", () => {
       expect(parsedResult).is.eql(oracle);
     });
   });
-  describe("#extractDirectory", () => {
+  describe("command.extractDirectory", () => {
     it("should correctly extract directory keys", () => {
       const oracle = {
         messages: {
@@ -136,7 +136,7 @@ describe("Files functions", () => {
       expect(parsedResult).is.eql(oracle);
     });
   });
-  describe("#writeFile", () => {
+  describe("command.writeFile", () => {
     it("should correctly write asset file", () => {
       const oracle = {
         messages: {
