@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const defaults = require("./defaults");
+
 const PROJECT_DIR = process.env.PWD;
 
 module.exports = {
@@ -8,82 +9,72 @@ module.exports = {
     alias: "l",
     type: "array",
     description: "List of generated locale",
-    default: defaults.locales
+    default: defaults.locales,
   },
   src: {
     alias: "s",
     type: "array",
     description: "Source directories to analyze",
-    coerce: value => {
-      const coercedValues = value.map(v => {
-          const completePath = path.join(PROJECT_DIR, v);
-          if (
-              !fs.existsSync(completePath) ||
-              !fs.statSync(completePath).isDirectory()
-          ) {
-              throw new Error(
-                  `Argument '${completePath}' must be a valid existing directory`
-              );
-          }
-          return completePath;
+    coerce: (value) => {
+      const coercedValues = value.map((v) => {
+        const completePath = path.join(PROJECT_DIR, v);
+        if (!fs.existsSync(completePath) || !fs.statSync(completePath).isDirectory()) {
+          throw new Error(`Argument '${completePath}' must be a valid existing directory`);
+        }
+        return completePath;
       });
       return coercedValues;
     },
-    default: defaults.src
+    default: defaults.src,
   },
   output: {
     alias: "o",
     type: "string",
     description: "Target directory to write file",
-    coerce: value => {
+    coerce: (value) => {
       const completePath = path.join(PROJECT_DIR, value);
-      if (
-        !fs.existsSync(completePath) ||
-        !fs.statSync(completePath).isDirectory()
-      ) {
-        throw new Error(
-          `Argument '${completePath}' must be a valid existing directory`
-        );
+      if (!fs.existsSync(completePath) || !fs.statSync(completePath).isDirectory()) {
+        throw new Error(`Argument '${completePath}' must be a valid existing directory`);
       }
       return completePath;
     },
-    default: defaults.output
+    default: defaults.output,
   },
   sourcePatterns: {
     alias: "p",
     type: "array",
     description: "RegExp pattern for sources files to analyze",
-    coerce: value => value.map(v => new RegExp(v)),
-    default: defaults.sourcePatterns
+    coerce: (value) => value.map((v) => new RegExp(v)),
+    default: defaults.sourcePatterns,
   },
   i18nPatterns: {
     alias: "i",
     type: "array",
     description: "i18n functions patterns",
-    coerce: value => value.map(v => new RegExp(v, "g")),
-    default: defaults.i18nPatterns
+    coerce: (value) => value.map((v) => new RegExp(v, "g")),
+    default: defaults.i18nPatterns,
   },
   verbose: {
     alias: "v",
     type: "boolean",
     description: "Verbose mode",
-    default: defaults.verbose
+    default: defaults.verbose,
   },
   withIndexFile: {
     alias: "x",
     type: "boolean",
     description: "Generate an index file to import all locales messages",
-    default: defaults.withIndexFile
+    default: defaults.withIndexFile,
   },
   forceErase: {
     alias: "e",
     type: "boolean",
     description: "Does not merge output files. Erase it instead.",
-    default: defaults.forceErase
+    default: defaults.forceErase,
   },
   logLevel: {
     type: "string",
     choices: ["warn", "success", "error", "debug", "all"],
-    default: defaults.logLevel
-  }
+    default: defaults.logLevel,
+  },
 };
