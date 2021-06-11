@@ -4,7 +4,7 @@
   "description": "Extract all vue-i18n keys from Vue.js project source files.",
   "main": "./index.js",
   "scripts": {
-    "test": "mocha",
+    "test": "mocha ./test/**/test*.js",
     "beautify": "eslint ./src ./test --fix --ignore-path .gitignore --ignore-path .eslintignore",
     "lint": "eslint ./src ./test --ignore-path .gitignore --ignore-path .eslintignore",
     "prepare": "husky install"

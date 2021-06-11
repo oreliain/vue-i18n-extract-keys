@@ -1,8 +1,8 @@
 const { expect } = require("chai");
 const fs = require("fs");
 const path = require("path");
-const Command = require("../src/Command");
-const defaults = require("../src/defaults");
+const Command = require("../../src/Command");
+const defaults = require("../../src/defaults");
 
 let command = null;
 
@@ -21,7 +21,7 @@ before("Setup command", () => {
   command = new Command({
     ...defaults,
     locales: ["en", "fr"],
-    src: ["test/src", "test/foo", "test/bar"],
+    src: ["test/base/src", "test/multipleSources/foo", "test/multipleSources/bar"],
     output: outputDir,
     sourcePatterns: defaults.sourcePatterns.map((s) => new RegExp(s)),
     i18nPatterns: defaults.i18nPatterns.map((p) => new RegExp(p, "g")),
@@ -32,7 +32,7 @@ describe("Source multiples", () => {
   describe("command.extractDirectories()", () => {
     it("should correctly extract directories keys", () => {
       const oracle = {
-        messages: {
+        "message with spaces": {
           hello: {
             fromVue: "fromVue",
             fromJS: "fromJS",
