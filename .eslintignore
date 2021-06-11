@@ -1,3 +1,4 @@
-test/src
-test/bar
-test/foo
+test/**/src
+test/**/bar
+test/**/foo
+test/**/default

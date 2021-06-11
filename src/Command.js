@@ -44,14 +44,23 @@ module.exports = class Command {
 
   /**
    * Convert a key string to its object representation
-   * @param {string} str
+   * @param {string} keyPath
    */
-  static convertToObj(str) {
-    if (!str) {
+  static convertToObj(keyPath = "") {
+    const customSplit = (str) => {
+      const splitChar = "<&_oreliain|:>";
+      const toSplit = str.replace(/\S\.\S/g, (match) => {
+        if (match) {
+          return match.replace(".", splitChar);
+        }
+        return "";
+      });
+      return toSplit.split(splitChar);
+    };
+    if (!keyPath) {
       return {};
     }
-    return str
-      .split(".")
+    return customSplit(keyPath)
       .reverse()
       .reduce((prev, curr) => ({ [curr]: prev !== null ? prev : curr }), null);
   }
@@ -82,11 +91,10 @@ module.exports = class Command {
     let result = {};
     if (fileContent) {
       this.log("pending", "Parse file", filePath);
-      const trimContent = fileContent.replace(/\s/g, "");
       this.i18nPatterns.forEach((pattern) => {
         let execResult = null;
         // eslint-disable-next-line no-cond-assign
-        while ((execResult = pattern.exec(trimContent))) {
+        while ((execResult = pattern.exec(fileContent))) {
           if (execResult && execResult.length > 1) {
             this.log("success", "Found key", execResult[1], "in", execResult[0]);
             result = this.deepMerge({}, result, Command.convertToObj(execResult[1]));
@@ -125,9 +133,12 @@ module.exports = class Command {
   /**
    * Extract keys from a directory
    * @return {object} keys
-   * @param {Array<string>} dirPaths
+   * @param {Array<string> | string} dirPaths
    */
   extractDirectories(dirPaths) {
+    if (typeof dirPaths === "string") {
+      return this.extractDirectory(dirPaths);
+    }
     let messages = {};
     dirPaths.forEach((dirPath) => {
       messages = this.deepMerge(messages, this.extractDirectory(dirPath));

@@ -1,8 +1,8 @@
 const { expect } = require("chai");
 const fs = require("fs");
 const path = require("path");
-const Command = require("../src/Command");
-const defaults = require("../src/defaults");
+const Command = require("../../src/Command");
+const defaults = require("../../src/defaults");
 
 let command = null;
 
@@ -21,8 +21,8 @@ before("Setup command", () => {
   command = new Command({
     ...defaults,
     locales: ["en", "fr"],
-    src: "test/src",
-    output: "test/src/i18n/locales",
+    src: srcDir,
+    output: outputDir,
     sourcePatterns: defaults.sourcePatterns.map((s) => new RegExp(s)),
     i18nPatterns: defaults.i18nPatterns.map((p) => new RegExp(p, "g")),
   });
@@ -97,7 +97,7 @@ describe("Files functions", () => {
   describe("command.parseFile()", () => {
     it("should correctly extract file keys", () => {
       const oracle = {
-        messages: { hello: { fromVue: "fromVue" } },
+        "message with spaces": { hello: { fromVue: "fromVue" } },
       };
       const getFilePath = (name) => path.resolve(srcDir, name);
       const parsedResult = command.parseFile(getFilePath("foo.vue"));
@@ -113,7 +113,7 @@ describe("Files functions", () => {
   describe("command.extractDirectory", () => {
     it("should correctly extract directory keys", () => {
       const oracle = {
-        messages: {
+        "message with spaces": {
           hello: {
             fromVue: "fromVue",
             fromJS: "fromJS",
@@ -128,7 +128,7 @@ describe("Files functions", () => {
   describe("command.writeFile", () => {
     it("should correctly write asset file", () => {
       const oracle = {
-        messages: {
+        "message with spaces": {
           hello: {
             fromVue: "fromVue",
             fromJS: "fromJS",
