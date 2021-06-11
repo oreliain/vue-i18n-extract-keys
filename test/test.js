@@ -62,17 +62,17 @@ describe("Utils functions", () => {
 
   describe("#convertToObj", () => {
     it("should return {} when passing '' or no args", () => {
-      const r1 = command.convertToObj();
-      const r2 = command.convertToObj("");
+      const r1 = Command.convertToObj();
+      const r2 = Command.convertToObj("");
       expect(r1).is.eql({});
       expect(r2).is.eql({});
     });
     it("should return expected result", () => {
-      const result = command.convertToObj("foo.bar.other.message");
+      const result = Command.convertToObj("foo.bar.other.message");
       const oracle = {
         foo: { bar: { other: { message: "message" } } },
       };
-      const result2 = command.convertToObj("foo");
+      const result2 = Command.convertToObj("foo");
       const oracle2 = { foo: "foo" };
       expect(result).is.eql(oracle);
       expect(result2).is.eql(oracle2);
