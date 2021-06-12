@@ -77,4 +77,10 @@ module.exports = {
     choices: ["warn", "success", "error", "debug", "all"],
     default: defaults.logLevel,
   },
+  keepKeys: {
+    alias: "k",
+    type: "boolean",
+    description: "Keep non existing keys in the final result",
+    default: defaults.keepKeys,
+  },
 };

@@ -10,4 +10,5 @@ module.exports = {
   withIndexFile: false,
   forceErase: false,
   logLevel: "success",
+  keepKeys: false,
 };

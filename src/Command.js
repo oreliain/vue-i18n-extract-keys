@@ -43,6 +43,40 @@ module.exports = class Command {
   }
 
   /**
+   * Deeply intersect several objects
+   * @param {object} oldObj
+   * @param  {...object} newObj
+   */
+  deepIntersect(oldObj = {}, ...newObj) {
+    // first object is reference
+    const result = oldObj;
+    const oldKeysRef = Object.keys(result);
+    let keysToKeep = [];
+    // walk through objects to merge
+    newObj.forEach((obj) => {
+      if (obj && typeof obj === "object") {
+        // keep keys from obj to merge that is already in ref object
+        keysToKeep = keysToKeep.concat(Object.keys(oldObj).filter((k) => !!obj[k]));
+        // do the merge (intersect recursively)
+        Object.keys(obj).forEach((key) => {
+          if (obj[key] && typeof obj[key] === "object") {
+            result[key] = this.deepIntersect(result[key], obj[key]);
+          } else {
+            result[key] = obj[key];
+          }
+        });
+      }
+    });
+    // return object with keys either being key to keep or not being in the ref object
+    return Object.keys(result).reduce((acc, curr) => {
+      if (keysToKeep.indexOf(curr) > -1 || oldKeysRef.indexOf(curr) === -1) {
+        acc[curr] = result[curr];
+      }
+      return acc;
+    }, {});
+  }
+
+  /**
    * Convert a key string to its object representation
    * @param {string} keyPath
    */
@@ -158,8 +192,14 @@ module.exports = class Command {
       if (fs.existsSync(localeFile) && !this.forceErase) {
         const fileContent = fs.readFileSync(localeFile, "utf8");
         finalObject[lang] = JSON.parse(fileContent);
+        if (this.keepKeys) {
+          finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
+        } else {
+          finalObject[lang] = this.deepIntersect(finalObject[lang], localesMsg);
+        }
+      } else {
+        finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
       }
-      finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
       fs.writeFileSync(localeFile, JSON.stringify(finalObject[lang], null, 2));
     });
     if (this.withIndexFile) {

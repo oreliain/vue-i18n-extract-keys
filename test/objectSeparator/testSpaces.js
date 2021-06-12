@@ -36,10 +36,12 @@ describe("Object separator", () => {
       command = new Command(commandOptions);
       const oracle = {
         login: {
-          "Malheureusement, cette application n’est pas prise en charge par votre navigateur.":
-            "Malheureusement, cette application n’est pas prise en charge par votre navigateur.",
-          "Pour y accéder et vous connecter, veuillez utiliser Google Chrome (version":
-            "Pour y accéder et vous connecter, veuillez utiliser Google Chrome (version",
+          messages: {
+            "Malheureusement, cette application n’est pas prise en charge par votre navigateur.":
+              "Malheureusement, cette application n’est pas prise en charge par votre navigateur.",
+            "Pour y accéder et vous connecter, veuillez utiliser Google Chrome (version":
+              "Pour y accéder et vous connecter, veuillez utiliser Google Chrome (version",
+          },
           // eslint-disable-next-line no-template-curly-in-string
           "Bienvenue sur ${console} l'interface de configuration EZAP4 de l'autre": {
             Test: "Test",
