@@ -1,4 +1,3 @@
-const yargs = require("yargs");
 const signale = require("signale");
 const fs = require("fs");
 const path = require("path");
@@ -6,7 +5,7 @@ const options = require("./options");
 
 module.exports = class Command {
   constructor(args) {
-    Object.keys(options).forEach(k => {
+    Object.keys(options).forEach((k) => {
       this[k] = args[k];
     });
   }
@@ -29,15 +28,11 @@ module.exports = class Command {
    */
   deepMerge(oldObj = {}, ...newObj) {
     const result = oldObj;
-    newObj.forEach(obj => {
+    newObj.forEach((obj) => {
       if (obj && typeof obj === "object") {
-        Object.keys(obj).forEach(key => {
+        Object.keys(obj).forEach((key) => {
           if (obj[key] && typeof obj[key] === "object") {
-            result[key] = this.deepMerge(
-              {},
-              result[key],
-              obj[key]
-            );
+            result[key] = this.deepMerge({}, result[key], obj[key]);
           } else {
             result[key] = obj[key];
           }
@@ -48,19 +43,60 @@ module.exports = class Command {
   }
 
   /**
-   * Convert a key string to its object representation
-   * @param {string} str
+   * Deeply intersect several objects
+   * @param {object} oldObj
+   * @param  {...object} newObj
    */
-  convertToObj(str) {
-    if (!str) {
+  deepIntersect(oldObj = {}, ...newObj) {
+    // first object is reference
+    const result = oldObj;
+    const oldKeysRef = Object.keys(result);
+    let keysToKeep = [];
+    // walk through objects to merge
+    newObj.forEach((obj) => {
+      if (obj && typeof obj === "object") {
+        // keep keys from obj to merge that is already in ref object
+        keysToKeep = keysToKeep.concat(Object.keys(oldObj).filter((k) => !!obj[k]));
+        // do the merge (intersect recursively)
+        Object.keys(obj).forEach((key) => {
+          if (obj[key] && typeof obj[key] === "object") {
+            result[key] = this.deepIntersect(result[key], obj[key]);
+          } else {
+            result[key] = obj[key];
+          }
+        });
+      }
+    });
+    // return object with keys either being key to keep or not being in the ref object
+    return Object.keys(result).reduce((acc, curr) => {
+      if (keysToKeep.indexOf(curr) > -1 || oldKeysRef.indexOf(curr) === -1) {
+        acc[curr] = result[curr];
+      }
+      return acc;
+    }, {});
+  }
+
+  /**
+   * Convert a key string to its object representation
+   * @param {string} keyPath
+   */
+  static convertToObj(keyPath = "") {
+    const customSplit = (str) => {
+      const splitChar = "<&_oreliain|:>";
+      const toSplit = str.replace(/\S\.\S/g, (match) => {
+        if (match) {
+          return match.replace(".", splitChar);
+        }
+        return "";
+      });
+      return toSplit.split(splitChar);
+    };
+    if (!keyPath) {
       return {};
     }
-    return str
-      .split(".")
+    return customSplit(keyPath)
       .reverse()
-      .reduce((prev, curr) => {
-        return { [curr]: prev };
-      }, str);
+      .reduce((prev, curr) => ({ [curr]: prev !== null ? prev : curr }), null);
   }
 
   /**
@@ -74,10 +110,11 @@ module.exports = class Command {
     while (i < this.sourcePatterns.length && !result) {
       const pattern = this.sourcePatterns[i];
       result = pattern.test(itemPath);
-      i++;
+      i += 1;
     }
     return result;
   }
+
   /**
    * Parse a file and extract its keys
    * @param {string} filePath
@@ -88,23 +125,13 @@ module.exports = class Command {
     let result = {};
     if (fileContent) {
       this.log("pending", "Parse file", filePath);
-      const trimContent = fileContent.replace(/\s/g, "");
-      this.i18nPatterns.forEach(pattern => {
+      this.i18nPatterns.forEach((pattern) => {
         let execResult = null;
-        while ((execResult = pattern.exec(trimContent))) {
+        // eslint-disable-next-line no-cond-assign
+        while ((execResult = pattern.exec(fileContent))) {
           if (execResult && execResult.length > 1) {
-            this.log(
-              "success",
-              "Found key",
-              execResult[1],
-              "in",
-              execResult[0]
-            );
-            result = this.deepMerge(
-              {},
-              result,
-              this.convertToObj(execResult[1])
-            );
+            this.log("success", "Found key", execResult[1], "in", execResult[0]);
+            result = this.deepMerge({}, result, Command.convertToObj(execResult[1]));
           }
         }
       });
@@ -122,14 +149,10 @@ module.exports = class Command {
     const files = fs.readdirSync(dirPath);
     if (files && files.length) {
       this.log("success", "Entering in", dirPath);
-      files.forEach(f => {
+      files.forEach((f) => {
         const completePath = path.join(dirPath, f);
         if (fs.statSync(completePath).isDirectory()) {
-          messages = this.deepMerge(
-            {},
-            messages,
-            this.extractDirectory(completePath)
-          );
+          messages = this.deepMerge({}, messages, this.extractDirectory(completePath));
         } else if (this.checkPath(completePath)) {
           this.log("success", "Matching path", completePath);
           messages = this.deepMerge({}, messages, this.parseFile(completePath));
@@ -141,41 +164,47 @@ module.exports = class Command {
     return messages;
   }
 
-    /**
-     * Extract keys from a directory
-     * @param {Array<string>} dirPath
-     * @return {object} keys
-     */
-    extractDirectories(dirPaths) {
-        let messages = {};
-        dirPaths.forEach(dirPath => {
-            messages = this.deepMerge(messages, this.extractDirectory(dirPath));
-        });
-        return messages;
+  /**
+   * Extract keys from a directory
+   * @return {object} keys
+   * @param {Array<string> | string} dirPaths
+   */
+  extractDirectories(dirPaths) {
+    if (typeof dirPaths === "string") {
+      return this.extractDirectory(dirPaths);
     }
+    let messages = {};
+    dirPaths.forEach((dirPath) => {
+      messages = this.deepMerge(messages, this.extractDirectory(dirPath));
+    });
+    return messages;
+  }
 
-
-    /**
+  /**
    * Write locales assets files.
    * @param {object} localesMsg
    */
   writeToFile(localesMsg) {
     const finalObject = {};
-    this.locales.forEach(lang => {
+    this.locales.forEach((lang) => {
       const localeFile = path.join(this.output, `${lang}.json`);
       finalObject[lang] = {};
       if (fs.existsSync(localeFile) && !this.forceErase) {
         const fileContent = fs.readFileSync(localeFile, "utf8");
         finalObject[lang] = JSON.parse(fileContent);
+        if (this.keepKeys) {
+          finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
+        } else {
+          finalObject[lang] = this.deepIntersect(finalObject[lang], localesMsg);
+        }
+      } else {
+        finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
       }
-      finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
       fs.writeFileSync(localeFile, JSON.stringify(finalObject[lang], null, 2));
     });
     if (this.withIndexFile) {
       const indexFile = path.join(this.output, "index.js");
-      const content = this.locales
-        .map(l => `\t${l}: require("./${l}.json")`)
-        .join(",\n");
+      const content = this.locales.map((l) => `\t${l}: require("./${l}.json")`).join(",\n");
       const indexContent = `module.exports = {\n${content}\n};\n`;
       fs.writeFileSync(indexFile, indexContent);
     }

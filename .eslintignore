@@ -1,0 +1,4 @@
+test/**/src
+test/**/bar
+test/**/foo
+test/**/default
