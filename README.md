@@ -84,6 +84,9 @@ module.exports = {
 };
 ```
 
+##### -k, --keepKeys (default: false)
+Keep non existing translations keys in the result translation file.
+
 ##### -e, --forceErase (default: false) :
 By default, the command updates the output files on each run. Use this option to erase the output files instead of update it.
 
