@@ -39,13 +39,20 @@ jobs:
       - name: "Use node v12"
         uses: actions/setup-node@v1
         with:
-          node-version: 12
+          node-version: 14
           registry-url: https://registry.npmjs.org/
       - name: npm install, build
         run: |
           npm ci
           npm run build --if-present
       - name: Semantic Releaser
-        uses: brpaz/action-semantic-release@v1
+        uses: cycjimmy/semantic-release-action@v2
         with:
+          branches: |
+            [
+              'releases'
+            ]
           branch: releases
+          extra_plugins: |
+            @semantic-release/changelog
+            @semantic-release/git
