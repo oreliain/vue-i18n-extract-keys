@@ -120,6 +120,9 @@ describe("Files functions", () => {
             fromTS: "fromTS",
           },
         },
+        namespace: {
+          "L'apostrophe du message doit être correcte.": "L'apostrophe du message doit être correcte.",
+        },
       };
       const parsedResult = command.extractDirectory(srcDir);
       expect(parsedResult).is.eql(oracle);
@@ -134,6 +137,9 @@ describe("Files functions", () => {
             fromJS: "fromJS",
             fromTS: "fromTS",
           },
+        },
+        namespace: {
+          "L'apostrophe du message doit être correcte.": "L'apostrophe du message doit être correcte.",
         },
       };
       const parsedResult = command.extractDirectory(srcDir);
