@@ -1,10 +1,12 @@
-const fs = require("fs");
-const path = require("path");
-const defaults = require("./defaults");
+import fs from "fs";
+import path from "path";
+import defaults from "./defaults";
+import yargs from "yargs";
+import glob from "glob";
 
-const PROJECT_DIR = process.env.PWD;
+const PROJECT_DIR = process.env.PWD as string;
 
-module.exports = {
+const options = {
   locales: {
     alias: "l",
     type: "array",
@@ -14,24 +16,19 @@ module.exports = {
   src: {
     alias: "s",
     type: "array",
-    description: "Source directories to analyze",
-    coerce: (value) => {
-      const coercedValues = value.map((v) => {
-        const completePath = path.join(PROJECT_DIR, v);
-        if (!fs.existsSync(completePath) || !fs.statSync(completePath).isDirectory()) {
-          throw new Error(`Argument '${completePath}' must be a valid existing directory`);
-        }
-        return completePath;
-      });
-      return coercedValues;
-    },
+    description: "Source globs to analyze",
     default: defaults.src,
+  },
+  ignorePatterns: {
+    alias: "i",
+    type: "array",
+    description: "Patterns to ignore",
   },
   output: {
     alias: "o",
     type: "string",
     description: "Target directory to write file",
-    coerce: (value) => {
+    coerce: (value: string) => {
       const completePath = path.join(PROJECT_DIR, value);
       if (!fs.existsSync(completePath) || !fs.statSync(completePath).isDirectory()) {
         throw new Error(`Argument '${completePath}' must be a valid existing directory`);
@@ -40,25 +37,15 @@ module.exports = {
     },
     default: defaults.output,
   },
-  sourcePatterns: {
-    alias: "p",
-    type: "array",
-    description: "RegExp pattern for sources files to analyze",
-    coerce: (value) => value.map((v) => new RegExp(v)),
-    default: defaults.sourcePatterns,
-  },
-  i18nPatterns: {
-    alias: "i",
-    type: "array",
-    description: "i18n functions patterns",
-    coerce: (value) => value.map((v) => new RegExp(v, "g")),
-    default: defaults.i18nPatterns,
-  },
   verbose: {
-    alias: "v",
     type: "boolean",
     description: "Verbose mode",
     default: defaults.verbose,
+  },
+  dryRun: {
+    type: "boolean",
+    description: "Dry run mode",
+    default: defaults.dryRun,
   },
   withIndexFile: {
     alias: "x",
@@ -83,4 +70,13 @@ module.exports = {
     description: "Keep non existing keys in the final result",
     default: defaults.keepKeys,
   },
-};
+  json: {
+    type: "boolean",
+    description: "Output json format",
+    default: defaults.keepKeys,
+  },
+} as const;
+
+export type CommandArgumentsType = yargs.InferredOptionTypes<typeof options>;
+export type CommandArguments = yargs.Arguments<CommandArgumentsType>;
+export default options;
