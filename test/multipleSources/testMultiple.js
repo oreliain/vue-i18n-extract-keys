@@ -39,6 +39,9 @@ describe("Source multiples", () => {
             fromTS: "fromTS",
           },
         },
+        namespace: {
+          "L'apostrophe du message doit être correcte.": "L'apostrophe du message doit être correcte.",
+        },
         foo: {
           hey: {
             fromVue: "fromVue",
