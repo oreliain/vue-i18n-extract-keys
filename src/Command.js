@@ -126,13 +126,20 @@ module.exports = class Command {
     if (fileContent) {
       this.log("pending", "Parse file", filePath);
       this.i18nPatterns.forEach((pattern) => {
-        let execResult = null;
-        // eslint-disable-next-line no-cond-assign
-        while ((execResult = pattern.exec(fileContent))) {
-          if (execResult && execResult.length > 1) {
-            this.log("success", "Found key", execResult[1], "in", execResult[0]);
-            result = this.deepMerge({}, result, Command.convertToObj(execResult[1]));
+        let execResult = pattern.exec(fileContent);
+        while (execResult) {
+          if (
+            execResult &&
+            execResult.groups &&
+            (execResult.groups.double || execResult.groups.simple || execResult.groups.back)
+          ) {
+            const key = execResult.groups.double || execResult.groups.simple || execResult.groups.back;
+            if (key) {
+              this.log("success", "Found key", key, "in", execResult[0]);
+              result = this.deepMerge({}, result, Command.convertToObj(key));
+            }
           }
+          execResult = pattern.exec(fileContent);
         }
       });
     }

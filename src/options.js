@@ -51,7 +51,13 @@ module.exports = {
     alias: "i",
     type: "array",
     description: "i18n functions patterns",
-    coerce: (value) => value.map((v) => new RegExp(v, "g")),
+    coerce: (value) =>
+      value.map((v) => {
+        if (typeof v === "string") {
+          return new RegExp(v, "gm");
+        }
+        return v;
+      }),
     default: defaults.i18nPatterns,
   },
   verbose: {
