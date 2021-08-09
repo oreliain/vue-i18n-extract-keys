@@ -48,7 +48,8 @@ jobs:
         run: |
           npm ci --ignore-scripts
           npm run build --if-present
-      - name: log npm config
-        run: cat $NPM_CONFIG_USERCONFIG
+      - name: set npm config
+        run: |
+          echo -e "//registry.npmjs.org/:_authToken=$NPM_TOKEN\n@oreliain:registry=https://registry.npmjs.org/\nalways-auth=false" > "$NPM_CONFIG_USERCONFIG"
       - name: Semantic Releaser
         run: npm run release
