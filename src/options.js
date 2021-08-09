@@ -89,11 +89,6 @@ module.exports = {
     description: "Does not merge output files. Erase it instead.",
     default: defaults.forceErase,
   },
-  logLevel: {
-    type: "string",
-    choices: ["warn", "success", "error", "debug", "all"],
-    default: defaults.logLevel,
-  },
   keepKeys: {
     alias: "k",
     type: "boolean",
