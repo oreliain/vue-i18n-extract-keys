@@ -28,6 +28,8 @@
   },
   "homepage": "https://github.com/oreliain/vue-i18n-extract-keys#readme",
   "dependencies": {
+    "colors": "^1.4.0",
+    "diff": "^5.0.0",
     "signale": "^1.4.0",
     "yargs": "^15.3.1"
   },

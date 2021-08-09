@@ -1,5 +1,7 @@
+require("colors");
 const signale = require("signale");
 const fs = require("fs");
+const diff = require("diff");
 const path = require("path");
 const options = require("./options");
 
@@ -16,7 +18,7 @@ module.exports = class Command {
    * @param  {...any} messages
    */
   log(type, ...messages) {
-    if (this.verbose && (type === this.logLevel || this.logLevel === "all")) {
+    if (this.dryRun || this.verbose) {
       signale[type](...messages);
     }
   }
@@ -43,37 +45,27 @@ module.exports = class Command {
   }
 
   /**
-   * Deeply intersect several objects
-   * @param {object} oldObj
-   * @param  {...object} newObj
+   * Add new keys and remove unexisting keys
+   * @param {Object} existingLocales
+   * @param {Object} newLocales
    */
-  deepIntersect(oldObj = {}, ...newObj) {
-    // first object is reference
-    const result = oldObj;
-    const oldKeysRef = Object.keys(result);
-    let keysToKeep = [];
-    // walk through objects to merge
-    newObj.forEach((obj) => {
-      if (obj && typeof obj === "object") {
-        // keep keys from obj to merge that is already in ref object
-        keysToKeep = keysToKeep.concat(Object.keys(oldObj).filter((k) => !!obj[k]));
-        // do the merge (intersect recursively)
-        Object.keys(obj).forEach((key) => {
-          if (obj[key] && typeof obj[key] === "object") {
-            result[key] = this.deepIntersect(result[key], obj[key]);
-          } else {
-            result[key] = obj[key];
-          }
-        });
-      }
-    });
-    // return object with keys either being key to keep or not being in the ref object
-    return Object.keys(result).reduce((acc, curr) => {
-      if (keysToKeep.indexOf(curr) > -1 || oldKeysRef.indexOf(curr) === -1) {
-        acc[curr] = result[curr];
-      }
-      return acc;
-    }, {});
+  addAndCleanMessages(existingLocales = {}, newLocales) {
+    const result = {};
+    if (newLocales && typeof newLocales === "object") {
+      Object.keys(newLocales).forEach((localeKey) => {
+        if (!existingLocales[localeKey]) {
+          // the key is newly added, so just add it
+          result[localeKey] = newLocales[localeKey];
+        } else if (newLocales[localeKey] && typeof newLocales[localeKey] === "object") {
+          // do recursive job
+          result[localeKey] = this.addAndCleanMessages(existingLocales[localeKey], newLocales[localeKey]);
+        } else {
+          // the key value already exist, do not erase it, so copy it in result
+          result[localeKey] = existingLocales[localeKey];
+        }
+      });
+    }
+    return result;
   }
 
   /**
@@ -124,7 +116,6 @@ module.exports = class Command {
     const fileContent = fs.readFileSync(filePath, "utf8");
     let result = {};
     if (fileContent) {
-      this.log("pending", "Parse file", filePath);
       this.i18nPatterns.forEach((pattern) => {
         let execResult = pattern.exec(fileContent);
         while (execResult) {
@@ -135,7 +126,7 @@ module.exports = class Command {
           ) {
             const key = execResult.groups.double || execResult.groups.simple || execResult.groups.back;
             if (key) {
-              this.log("success", "Found key", key, "in", execResult[0]);
+              this.log("info", `\t\t 🔑 key "${key}" found`);
               result = this.deepMerge({}, result, Command.convertToObj(key));
             }
           }
@@ -155,16 +146,16 @@ module.exports = class Command {
     let messages = {};
     const files = fs.readdirSync(dirPath);
     if (files && files.length) {
-      this.log("success", "Entering in", dirPath);
+      this.log("info", "Entering in", dirPath);
       files.forEach((f) => {
         const completePath = path.join(dirPath, f);
         if (fs.statSync(completePath).isDirectory()) {
           messages = this.deepMerge({}, messages, this.extractDirectory(completePath));
         } else if (this.checkPath(completePath)) {
-          this.log("success", "Matching path", completePath);
+          this.log("info", `\t• Parsing "${f}"`);
           messages = this.deepMerge({}, messages, this.parseFile(completePath));
         } else {
-          this.log("warn", "Not matching path", completePath);
+          this.log("warn", `\t• "${f}" does not match the filename capturing pattern`);
         }
       });
     }
@@ -196,34 +187,58 @@ module.exports = class Command {
     this.locales.forEach((lang) => {
       const localeFile = path.join(this.output, `${lang}.json`);
       finalObject[lang] = {};
+      let compareRef = {};
       if (fs.existsSync(localeFile) && !this.forceErase) {
         const fileContent = fs.readFileSync(localeFile, "utf8");
+        compareRef = JSON.parse(fileContent);
         finalObject[lang] = JSON.parse(fileContent);
         if (this.keepKeys) {
           finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
         } else {
-          finalObject[lang] = this.deepIntersect(finalObject[lang], localesMsg);
+          finalObject[lang] = this.addAndCleanMessages(finalObject[lang], localesMsg);
         }
       } else {
         finalObject[lang] = this.deepMerge({}, localesMsg, finalObject[lang]);
       }
-      fs.writeFileSync(localeFile, JSON.stringify(finalObject[lang], null, 2));
+      if (!this.dryRun) {
+        this.log("success", `Writing file for locale "${lang}" to "${localeFile}"`);
+        fs.writeFileSync(localeFile, JSON.stringify(finalObject[lang], null, 2));
+      }
+      const diffs = diff.diffJson(compareRef, finalObject[lang]);
+      const addedKeys = diffs.filter((part) => !!part.added).length;
+      const removedKeys = diffs.filter((part) => !!part.removed).length;
+      signale.info(`${localeFile + ` : + ${addedKeys} keys added`.green}, ${`- ${removedKeys} keys removed`.red}`);
+      if (this.showDiff) {
+        this.log("info", `Differences for the locale file "${localeFile}" :\n`);
+
+        diffs.forEach((part) => {
+          // green for additions, red for deletions
+          // grey for common parts
+          // eslint-disable-next-line no-nested-ternary
+          const color = part.added ? "green" : part.removed ? "red" : "white";
+          process.stdout.write(part.value[color]);
+        });
+        console.log("\n");
+      }
     });
     if (this.withIndexFile) {
       const indexFile = path.join(this.output, "index.js");
       const content = this.locales.map((l) => `\t${l}: require("./${l}.json")`).join(",\n");
       const indexContent = `module.exports = {\n${content}\n};\n`;
-      fs.writeFileSync(indexFile, indexContent);
+      if (!this.dryRun) {
+        this.log("info", `Writing index file to "${indexFile}"`);
+        fs.writeFileSync(indexFile, indexContent);
+      }
     }
   }
 
   execute() {
     // Begin execution
     signale.time("Extract i18n keys");
-    this.log("start", "Start parsing files");
+    this.log("start", "Start keys extraction");
     const messages = this.extractDirectories(this.src);
     this.writeToFile(messages);
-    this.log("complete", "Locale assets generated !");
+    this.log("complete", "Extraction completed");
     signale.timeEnd("Extract i18n keys");
   }
 };
