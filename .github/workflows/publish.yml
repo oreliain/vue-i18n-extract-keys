@@ -31,8 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     env:
       CI: true
-      GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
@@ -56,6 +54,8 @@ jobs:
           extra_plugins: |
             @semantic-release/changelog
             @semantic-release/git
+      - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release -p '@semantic-release/commit-analyzer' -p '@semantic-release/release-notes-generator' -p '@semantic-release/npm' -p '@semantic-release/github' -p '@semantic-release/changelog' -p '@semantic-release/git'

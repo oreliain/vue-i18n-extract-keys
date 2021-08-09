@@ -9,8 +9,9 @@ module.exports = {
     /\$t[ce]?(?:(?:\('(?<simple>.*?)'(?:,.*)?\))|(?:\("(?<double>.*?)"(?:,.*)?\))|(?:\(`(?<back>.*?)`(?:,.*)?\)))/gm,
   ],
   verbose: false,
+  dryRun: false,
+  showDiff: false,
   withIndexFile: false,
   forceErase: false,
-  logLevel: "success",
   keepKeys: false,
 };

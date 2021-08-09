@@ -66,6 +66,17 @@ module.exports = {
     description: "Verbose mode",
     default: defaults.verbose,
   },
+  dryRun: {
+    alias: "d",
+    type: "boolean",
+    description: "Dry run mode",
+    default: defaults.dryRun,
+  },
+  showDiff: {
+    type: "boolean",
+    description: "Show difference form locale files",
+    default: defaults.showDiff,
+  },
   withIndexFile: {
     alias: "x",
     type: "boolean",
@@ -77,11 +88,6 @@ module.exports = {
     type: "boolean",
     description: "Does not merge output files. Erase it instead.",
     default: defaults.forceErase,
-  },
-  logLevel: {
-    type: "string",
-    choices: ["warn", "success", "error", "debug", "all"],
-    default: defaults.logLevel,
   },
   keepKeys: {
     alias: "k",

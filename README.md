@@ -93,8 +93,11 @@ By default, the command updates the output files on each run. Use this option to
 ##### -v, --verbose (default: false)
 Set verbose mode
 
-##### --logLevel (default: "success")
-Set the log level ("warn", "success", "error", "debug", "all")
+##### -d, --dryRun (default: false)
+Dry run mode, do the parsing but do not write locales files
+
+##### --showDiff (default: false)
+Show the differences between old and new locales files
 
 ##### -h, --help
 Print the help message
