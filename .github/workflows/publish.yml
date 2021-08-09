@@ -38,14 +38,17 @@ jobs:
     steps:
       - name: "Checkout"
         uses: actions/checkout@v2
-      - name: "Use node v12"
+      - name: "Use node v14"
         uses: actions/setup-node@v1
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
+          scope: @oreliain
       - name: npm install, build
         run: |
           npm ci --ignore-scripts
           npm run build --if-present
+      - name: log npm config
+        run: cat $NPM_CONFIG_USERCONFIG
       - name: Semantic Releaser
         run: npm run release
