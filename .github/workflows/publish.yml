@@ -43,7 +43,7 @@ jobs:
         with:
           node-version: 14
           registry-url: https://registry.npmjs.org/
-          scope: @oreliain
+          scope: '@oreliain'
       - name: npm install, build
         run: |
           npm ci --ignore-scripts
