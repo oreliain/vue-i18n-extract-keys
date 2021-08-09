@@ -7,7 +7,8 @@
     "test": "mocha ./test/**/test*.js",
     "beautify": "eslint ./src ./test --fix --ignore-path .gitignore --ignore-path .eslintignore",
     "lint": "eslint ./src ./test --ignore-path .gitignore --ignore-path .eslintignore",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "semantic-release"
   },
   "bin": {
     "vue-i18n-extract-keys": "./index.js"
@@ -47,7 +48,8 @@
     "husky": "^6.0.0",
     "lint-staged": "^11.0.0",
     "mocha": "^7.2.0",
-    "prettier": "^2.3.1"
+    "prettier": "^2.3.1",
+    "semantic-release": "^17.4.4"
   },
   "publishConfig": {
     "access": "public"
@@ -56,7 +58,9 @@
     "*.js": "eslint --fix --ignore-path .gitinore --ignore-path .eslintignore"
   },
   "release": {
-    "branches":  ["releases"],
+    "branches": [
+      "releases"
+    ],
     "plugins": [
       "@semantic-release/commit-analyzer",
       "@semantic-release/release-notes-generator",
