@@ -52,5 +52,15 @@
   },
   "lint-staged": {
     "*.js": "eslint --fix --ignore-path .gitinore --ignore-path .eslintignore"
+  },
+  "release": {
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      "@semantic-release/npm",
+      "@semantic-release/github",
+      "@semantic-release/changelog",
+      "@semantic-release/git"
+    ]
   }
 }
