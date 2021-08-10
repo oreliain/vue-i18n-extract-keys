@@ -1,3 +1,10 @@
+## [2.1.1](https://github.com/oreliain/vue-i18n-extract-keys/compare/v2.1.0...v2.1.1) (2021-08-10)
+
+
+### Bug Fixes
+
+* **cli:** the extractor does not take whitespaces into account ([29e597d](https://github.com/oreliain/vue-i18n-extract-keys/commit/29e597d3a185d5d3bb1ef3d812ccc6c3e6a0dc84))
+
 # [2.1.0](https://github.com/oreliain/vue-i18n-extract-keys/compare/v2.0.0...v2.1.0) (2021-08-09)
 
 
