@@ -6,7 +6,7 @@ module.exports = {
   output: path.join("i18n", "locales"),
   sourcePatterns: ["\\.vue$", "\\.ts(x)?$", "\\.js(x)?$"],
   i18nPatterns: [
-    /\$t[ce]?(?:(?:\('(?<simple>.*?)'(?:,.*)?\))|(?:\("(?<double>.*?)"(?:,.*)?\))|(?:\(`(?<back>.*?)`(?:,.*)?\)))/gm,
+    /\$t[ce]?(?:(?:\(\s*'(?<simple>.*?)'\s*(?:,.*)?\))|(?:\(\s*"(?<double>.*?)"\s*(?:,.*)?\))|(?:\(`\s*(?<back>.*?)`\s*(?:,.*)?\)))/gm,
   ],
   verbose: false,
   dryRun: false,
