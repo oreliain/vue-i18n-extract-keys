@@ -1,1 +1,3 @@
-console.log(this.$t("message with spaces.hello.fromJS"));
+console.log(this.$t(
+	"message with spaces.hello.fromJS"
+));
